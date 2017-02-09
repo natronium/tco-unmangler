@@ -1,8 +1,6 @@
 // If it matters, this thing's licensed under the
 // BSD 0-clause or CC0. Take your pick.
 
-console.debug('t.co-sucks loaded');
-
 function unmangleTcoLinks(node){
   //  Old fashioned links (like your grandma used to make)
   //  are <a>s with a `data-expanded-url` attribute which
@@ -25,7 +23,6 @@ function unmangleMobileTcoLinks(node){
       if (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:'){
         throw 'link protocol wasn\'t http(s). PANIC PANIC PANIC';
       }
-      console.debug(span, ' in ', node, ' will now point to ' + parsedURL);
       span.parentNode.href = parsedURL;
     } catch(e){
       console.debug('Twitter put something funky in their span', span);
