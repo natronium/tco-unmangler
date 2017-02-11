@@ -83,14 +83,11 @@ var desktopObserver = new MutationObserver(function(mutations){
   mutations.forEach(function(mutation) {
     mutation.addedNodes.forEach(function(node){
 
-      if (node.nodeName === 'LI'){
+      if (node.matches('li, div.permalink-container')){
         // The mutations we care about are the ones that
         // insert <li>s into the DOM. Those are new tweets.
         unmangleTcoLinks(node)
-      } else if (node.nodeName === 'IFRAME'){
-        // Uhhhhh
       }
-
     })
   });
 });
