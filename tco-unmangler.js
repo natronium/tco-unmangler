@@ -11,6 +11,7 @@ function unmangleTcoLinks(node){
 }
 
 function unmangleMobileTcoLinks(node){
+  // Regular links
   node.querySelectorAll('span._1piKw1fp').forEach(function(span){
     // This is probably overkill, but I don't know how
     // sanitized those links really are, and I'm not sure
@@ -28,9 +29,38 @@ function unmangleMobileTcoLinks(node){
       console.debug('Twitter put something funky in their span', span);
     }
   });
+
+  // Cards
+  node.querySelectorAll('div._1ZLV7vdT._3f2NsD-H').forEach(function(card){
+    var tweet = getMobileTweetObjFromCard(card);
+    tweet.entities.urls.forEach(function(urlObj){
+      if(urlObj.url === tweet.card.url){
+        card.querySelector('a').href = urlObj.expanded_url;
+      }
+    }
+  }
 }
 
-
+function getMobileTweetObjFromCard(card){
+  // Ia! Ia! Cthulhu fhtagn!
+  // This function is super sketchy, and reaches into
+  // react's guts in order to get a tweet.
+  // It's modeled off of http://stackoverflow.com/q/29321742
+  // And used facebook's react dev-tools to figure out
+  // *where* to expect the react guts to be
+  for (var reactKey in card){
+    if(reactKey.startsWith("__reactInternalInstance")){
+      var tweetyBits = card.parentElement[reactKey] // React ref to tweet container
+        ._currentElement  // Reactier ref
+        .props.children; // All the bits that make up the tweet
+      for (var i = 0; i < tweetyBits.length; i++){
+        if (typeof tweetyBits[i].props.tweet !== 'undefined'){
+          return tweetyBits[i].props.tweet;
+        } //if child has tweet
+      } // For each child
+    } // if we found the react key
+  } // for each property in the card
+}
 
 // Mobile and desktop twitter require different mangling
 var desktopObserver = new MutationObserver(function(mutations){
@@ -60,7 +90,7 @@ var mobileObserver = new MutationObserver(function(mutations){
       // Sections for the initial bulk page creation
       if (node.nodeName === 'DIV' || node.nodeName === 'SECTION'){
         unmangleMobileTcoLinks(node)
-      } 
+      }
 
       // There's no way to deal with cards on the mobile
       // site :(
@@ -68,8 +98,6 @@ var mobileObserver = new MutationObserver(function(mutations){
     });
   });
 });
-
-
 
 var observerConfig = {
   //childList means we're following node addition/removal
@@ -80,7 +108,6 @@ var observerConfig = {
   //(all the way down)
   'subtree': true
 }
-
 
 if (document.location.hostname === 'twitter.com'){
   unmangleTcoLinks(document);
