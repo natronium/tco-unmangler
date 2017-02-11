@@ -5,10 +5,23 @@ function unmangleTcoLinks(node){
   //  Old fashioned links (like your grandma used to make)
   //  are <a>s with a `data-expanded-url` attribute which
   //  contains the full link
-  node.querySelectorAll('a[data-expanded-url]').forEach(
-    function(anchor){anchor.href = anchor.dataset.expandedUrl}
+  node.querySelectorAll('a[data-expanded-url]').forEach(function(anchor){
+    anchor.dataset.tcoUrl = anchor.href;
+    anchor.href = anchor.dataset.expandedUrl;
+  }
   )
+
+
 }
+
+function unmangleCardLinks(frameWindow, tweetWindow){
+  // Assuming there's only one <a> in a card frame
+  var internalLink = frameWindow.document.querySelector('a');
+  var externalLink = tweetWindow.document.querySelector(`a[data-tco-url="${internalLink.href}"]`);
+
+  internalLink.href = externalLink.dataset.expandedUrl;
+}
+
 
 function unmangleMobileTcoLinks(node){
   // Regular links
@@ -37,8 +50,8 @@ function unmangleMobileTcoLinks(node){
       if(urlObj.url === tweet.card.url){
         card.querySelector('a').href = urlObj.expanded_url;
       }
-    }
-  }
+    });
+  });
 }
 
 function getMobileTweetObjFromCard(card){
@@ -109,7 +122,11 @@ var observerConfig = {
   'subtree': true
 }
 
-if (document.location.hostname === 'twitter.com'){
+// if (document.location.pathname.startsWith('/i/cards/')
+//       && typeof window.frameElement !== 'undefined'){
+if (document.location.pathname.startsWith('/i/cards/') && typeof window.frameElement !== 'undefined'){
+  unmangleCardLinks(window, window.parent);
+} else if (document.location.hostname === 'twitter.com'){
   unmangleTcoLinks(document);
   desktopObserver.observe(document, observerConfig);
 } else if (document.location.hostname === 'mobile.twitter.com'){
