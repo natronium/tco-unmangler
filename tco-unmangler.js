@@ -122,7 +122,9 @@ var observerConfig = {
 
 // if (document.location.pathname.startsWith('/i/cards/')
 //       && typeof window.frameElement !== 'undefined'){
-if (document.location.pathname.startsWith('/i/cards/') && typeof window.frameElement !== 'undefined'){
+if (document.location.pathname.startsWith('/i/cards/') &&
+    document.querySelector('meta[name="card_name"]').content !== 'promo_website' &&
+    typeof window.frameElement !== 'undefined'){
   unmangleCardLinks(window, window.parent);
 } else if (document.location.hostname === 'twitter.com'){
   unmangleTcoLinks(document);
