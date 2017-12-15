@@ -1,5 +1,6 @@
 // If it matters, this thing's licensed under the
 // BSD 0-clause or CC0. Take your pick.
+'use strict';
 
 function unmangleTcoLinks(node){
   //  Old fashioned links (like your grandma used to make)
@@ -9,7 +10,7 @@ function unmangleTcoLinks(node){
     anchor.dataset.tcoUrl = anchor.href;
     anchor.href = anchor.dataset.expandedUrl;
   }
-  )
+  );
 
 
 }
@@ -39,7 +40,7 @@ function unmangleMobileTcoLinks(node){
       }
       span.parentNode.href = parsedURL;
     } catch(e){
-      console.debug('Twitter put something funky in their span', span);
+      window.console.debug('Twitter put something funky in their span', span);
     }
   });
 
@@ -87,9 +88,9 @@ var desktopObserver = new MutationObserver(function(mutations){
           node.matches('li, div.permalink-container, *[class*="ThreadedConversation"]')){
         // The mutations we care about are the ones that
         // insert <li>s into the DOM. Those are new tweets.
-        unmangleTcoLinks(node)
+        unmangleTcoLinks(node);
       }
-    })
+    });
   });
 });
 
@@ -100,7 +101,7 @@ var mobileObserver = new MutationObserver(function(mutations){
       // Divs for individual tweets
       // Sections for the initial bulk page creation
       if (node.nodeName === 'DIV' || node.nodeName === 'SECTION'){
-        unmangleMobileTcoLinks(node)
+        unmangleMobileTcoLinks(node);
       }
 
       // There's no way to deal with cards on the mobile
@@ -118,7 +119,7 @@ var observerConfig = {
   //changes that happen to the target's descendants
   //(all the way down)
   'subtree': true
-}
+};
 
 // if (document.location.pathname.startsWith('/i/cards/')
 //       && typeof window.frameElement !== 'undefined'){
@@ -133,4 +134,3 @@ if (document.location.pathname.startsWith('/i/cards/') &&
   mobileObserver.observe(document, observerConfig);
   unmangleMobileTcoLinks(document);
 }
-
