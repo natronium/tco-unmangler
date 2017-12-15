@@ -1,5 +1,17 @@
+// ==UserScript==
+// @name         t.co unmangler
+// @namespace    http://sodium.online/
+// @version      0.1.4
+// @description  Replace t.co links on twitter.com and mobile.twitter.com with their actual targets.
+// @author       Na
+// @match        https://twitter.com/*
+// @match        https://*.twitter.com/*
+// @grant        none
+// ==/UserScript==
+
 // If it matters, this thing's licensed under the
 // BSD 0-clause or CC0. Take your pick.
+
 'use strict';
 
 function unmangleTcoLinks(node){
