@@ -10,7 +10,7 @@
         "https://*.twitter.com/*"
       ],
       "js": [
-        "tco-unmangler.js"
+        "tco-unmangler.user.js"
       ],
       "all_frames": true
     }
